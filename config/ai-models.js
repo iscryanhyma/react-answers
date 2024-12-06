@@ -49,7 +49,7 @@ const AI_MODELS = {
 //   }
 };
 
-export const getModelConfig = (provider, modelName = null) => {
+const getModelConfig = (provider, modelName = null) => {
   const providerConfig = AI_MODELS[provider];
   if (!providerConfig) {
     throw new Error(`Unknown AI provider: ${provider}`);
@@ -68,4 +68,4 @@ export const getModelConfig = (provider, modelName = null) => {
   };
 };
 
-export default AI_MODELS;
+module.exports = { getModelConfig, AI_MODELS };
