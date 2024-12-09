@@ -3,10 +3,11 @@ const { ChatOpenAI } = require('@langchain/openai');
 const { ChatAnthropic } = require('@langchain/anthropic');
 const { ChatCohere } = require('@langchain/cohere');
 const downloadWebPageTool = require('./tools/downloadWebPage'); // Import the instantiated tool
+const checkUrlStatusTool = require('./tools/checkURL'); // Import the checkUrlStatusTool
 const { getModelConfig } = require('../config/ai-models'); // Import the getModelConfig function
 require('dotenv').config();
 
-const tools = [downloadWebPageTool]; // Use the imported tool
+const tools = [downloadWebPageTool, checkUrlStatusTool]; // Use the imported tools
 
 const createOpenAIAgent = async () => {
   const modelConfig = getModelConfig('openai');
@@ -24,14 +25,13 @@ const createOpenAIAgent = async () => {
   return agent;
 };
 
-
 const createCohereAgent = async () => {
-  //const modelConfig = getModelConfig('cohere');
+  const modelConfig = getModelConfig('cohere');
   const cohere = new ChatCohere({
     apiKey: process.env.REACT_APP_COHERE_API_KEY,
-   // model: modelConfig.name,
-   // temperature: modelConfig.temperature,
-   // maxTokens: modelConfig.maxTokens,
+    model: modelConfig.name,
+    temperature: modelConfig.temperature,
+    maxTokens: modelConfig.maxTokens,
   });
   const agent = await createReactAgent({
     llm: cohere,
@@ -58,7 +58,7 @@ const createClaudeAgent = async () => {
 
 const createAgents = async () => {
   const openAIAgent = await createOpenAIAgent();
-  const cohereAgent = await createCohereAgent();
+  const cohereAgent = null; //await createCohereAgent();
   const claudeAgent = await createClaudeAgent();
   return { openAIAgent, cohereAgent, claudeAgent };
 };
