@@ -51,7 +51,7 @@ const dynamicDownloadAndParseWebpage = async (url, selectorToWaitFor = "div.resu
     try {
         console.log(`Navigating to ${url}...`);
         await page.goto(url, { waitUntil: "domcontentloaded" });
-        await page.waitForSelector(selectorToWaitFor, { timeout: 5000, polling: 100 });
+        await page.waitForSelector(selectorToWaitFor, { timeout: 30000, polling: 100 });
 
         // Get the HTML content after dynamic content has loaded
         const html = await page.content();
