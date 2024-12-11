@@ -4,7 +4,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "install": "npx playwright install chromium"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +24,7 @@
     "express": "^4.21.1",
     "langchain": "^0.3.6",
     "mongoose": "^8.8.3",
-    "openai": "^4.73.1"
+    "openai": "^4.73.1",
+    "playwright": "^1.49.1"
   }
 }

@@ -66,7 +66,7 @@ app.post('/api/claude', async (req, res) => {
        
         {
           role: "system",
-          content: systemPrompt,
+          content: "Do what the user asks. For searching canada.ca if the question is asked in english, supply 'eng' if french supply 'fra'. The search query should be a few keywords from question that is being asked. For exampple: what is SCIS, the query would be: SCIS description", //systemPrompt,
         },
         ...conversationHistory,
         {

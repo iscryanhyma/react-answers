@@ -4,10 +4,11 @@ const { ChatAnthropic } = require('@langchain/anthropic');
 const { ChatCohere } = require('@langchain/cohere');
 const downloadWebPageTool = require('./tools/downloadWebPage'); // Import the instantiated tool
 const checkUrlStatusTool = require('./tools/checkURL'); // Import the checkUrlStatusTool
+const canadaCASearch = require('./tools/canadaCaSearch'); // Import the checkUrlStatusTool
 const { getModelConfig } = require('../config/ai-models'); // Import the getModelConfig function
 require('dotenv').config();
 
-const tools = [downloadWebPageTool, checkUrlStatusTool]; // Use the imported tools
+const tools = [downloadWebPageTool, checkUrlStatusTool, canadaCASearch]; // Use the imported tools
 
 const createOpenAIAgent = async () => {
   const modelConfig = getModelConfig('openai');
