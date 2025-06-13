@@ -2,6 +2,7 @@
 import { createOpenAIAgent } from '../../agents/AgentService.js';
 import ServerLoggingService from '../../services/ServerLoggingService.js';
 import { ToolTrackingHandler } from '../../agents/ToolTrackingHandler.js';
+import { invokeWithToolRetry } from '../../utils/invokeWithToolRetry.js';
 
 const NUM_RETRIES = 3;
 const BASE_DELAY = 1000; // 1 second
@@ -48,9 +49,7 @@ async function invokeHandler(req, res) {
         },
       ];
 
-      let answer = await openAIAgent.invoke({
-        messages: messages,
-      });
+      const answer = await invokeWithToolRetry(openAIAgent, messages, chatId);
 
       if (Array.isArray(answer.messages) && answer.messages.length > 0) {
         /*answer.messages.forEach((msg, index) => {
