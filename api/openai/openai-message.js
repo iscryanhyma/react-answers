@@ -48,9 +48,22 @@ async function invokeHandler(req, res) {
         },
       ];
 
-      let answer = await openAIAgent.invoke({
-        messages: messages,
-      });
+      let answer;
+      try {
+        answer = await openAIAgent.invoke({ messages });
+      } catch (err) {
+        const errMsg = err?.message || '';
+        if (errMsg.includes('tool') && errMsg.includes('exist')) {
+          ServerLoggingService.warn('Retry after hallucinated tool', chatId, errMsg);
+          const retryMessages = [
+            ...messages,
+            { role: 'user', content: 'Use only the tools: downloadWebPage, checkUrl, generateContext.' }
+          ];
+          answer = await openAIAgent.invoke({ messages: retryMessages });
+        } else {
+          throw err;
+        }
+      }
 
       if (Array.isArray(answer.messages) && answer.messages.length > 0) {
         /*answer.messages.forEach((msg, index) => {

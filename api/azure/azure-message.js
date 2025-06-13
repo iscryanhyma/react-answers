@@ -44,9 +44,22 @@ async function invokeHandler(req, res) {
       
       ServerLoggingService.info('azureAgent.invoke start', chatId);
       const invokeStart = Date.now();
-      let answer = await azureAgent.invoke({
-        messages: messages,
-      });
+      let answer;
+      try {
+        answer = await azureAgent.invoke({ messages });
+      } catch (err) {
+        const errMsg = err?.message || '';
+        if (errMsg.includes('tool') && errMsg.includes('exist')) {
+          ServerLoggingService.warn('Retry after hallucinated tool', chatId, errMsg);
+          const retryMessages = [
+            ...messages,
+            { role: 'user', content: 'Use only the tools: downloadWebPage, checkUrl, generateContext.' }
+          ];
+          answer = await azureAgent.invoke({ messages: retryMessages });
+        } else {
+          throw err;
+        }
+      }
       const invokeDuration = Date.now() - invokeStart;
       ServerLoggingService.info(`azureAgent.invoke end (duration: ${invokeDuration}ms)`, chatId);
 
