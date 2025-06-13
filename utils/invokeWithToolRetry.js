@@ -1,4 +1,4 @@
-import ServerLoggingService from '../../services/ServerLoggingService.js';
+import ServerLoggingService from '../services/ServerLoggingService.js';
 
 export async function invokeWithToolRetry(agent, messages, chatId) {
   try {

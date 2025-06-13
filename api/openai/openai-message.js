@@ -2,7 +2,7 @@
 import { createOpenAIAgent } from '../../agents/AgentService.js';
 import ServerLoggingService from '../../services/ServerLoggingService.js';
 import { ToolTrackingHandler } from '../../agents/ToolTrackingHandler.js';
-import { invokeWithToolRetry } from '../utils/invokeWithToolRetry.js';
+import { invokeWithToolRetry } from '../../utils/invokeWithToolRetry.js';
 
 const NUM_RETRIES = 3;
 const BASE_DELAY = 1000; // 1 second
