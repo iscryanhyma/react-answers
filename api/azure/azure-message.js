@@ -1,6 +1,7 @@
 import { createAzureOpenAIAgent } from '../../agents/AgentService.js';
 import ServerLoggingService from '../../services/ServerLoggingService.js';
 import { ToolTrackingHandler } from '../../agents/ToolTrackingHandler.js';
+import { invokeWithToolRetry } from '../utils/invokeWithToolRetry.js';
 
 const NUM_RETRIES = 3;
 const BASE_DELAY = 1000; // 1 second
@@ -44,22 +45,7 @@ async function invokeHandler(req, res) {
       
       ServerLoggingService.info('azureAgent.invoke start', chatId);
       const invokeStart = Date.now();
-      let answer;
-      try {
-        answer = await azureAgent.invoke({ messages });
-      } catch (err) {
-        const errMsg = err?.message || '';
-        if (errMsg.includes('tool') && errMsg.includes('exist')) {
-          ServerLoggingService.warn('Retry after hallucinated tool', chatId, errMsg);
-          const retryMessages = [
-            ...messages,
-            { role: 'user', content: 'Use only the tools: downloadWebPage, checkUrl, generateContext.' }
-          ];
-          answer = await azureAgent.invoke({ messages: retryMessages });
-        } else {
-          throw err;
-        }
-      }
+      const answer = await invokeWithToolRetry(azureAgent, messages, chatId);
       const invokeDuration = Date.now() - invokeStart;
       ServerLoggingService.info(`azureAgent.invoke end (duration: ${invokeDuration}ms)`, chatId);
 
